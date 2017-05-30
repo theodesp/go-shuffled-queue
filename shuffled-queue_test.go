@@ -23,7 +23,19 @@ func (s *MySuite) TestSmoke(c *C) {
 // Default Constructor test
 func (s *MySuite) TestNewSPQ(c *C) {
 	queue := NewSPQ()
-	c.Assert(queue.priorities.String(), Equals, "Set{}")
+	c.Assert(len(queue.priorities), Equals, 0)
+}
+
+// Add method
+func (s *MySuite) TestAdd(c *C) {
+	queue := NewSPQ()
+
+	c.Assert(len(queue.priorities), Equals, 0)
+
+	queue.Add("world")
+
+	c.Assert(len(queue.priorities), Equals, 1)
+	c.Assert(queue.priorities[0].ToSlice(), DeepEquals, []interface {}{"world"})
 }
 
 func (s *MySuite) BenchmarkNewSPQ(c *C) {

@@ -29,7 +29,7 @@ import "github.com/deckarep/golang-set"
 
 
 // The default priority of all items unless specified otherwise
-const DefaultPriority = 0
+const DefaultPriority uint32 = uint32(0)
 
 
 // A PriorityQueueItem defines a simple placeholder of the `priority` and `value` pair.
@@ -40,13 +40,27 @@ type PriorityQueueItem struct {
 }
 
 type ShuffledPriorityQueue struct {
-	priorities mapset.Set
+	priorities map[uint32]mapset.Set
 }
 
 
 // Creates and returns a reference to an empty shuffled priority queue.
 func NewSPQ() *ShuffledPriorityQueue {
-	spq := &ShuffledPriorityQueue{priorities: mapset.NewSet()}
+	spq := &ShuffledPriorityQueue{priorities: make(map[uint32]mapset.Set)}
 
 	return spq
+}
+
+
+// Adds an item to the priority queue using the default priority.
+// Returns the value added
+func (spq *ShuffledPriorityQueue) Add(Value interface{}) interface{} {
+	_, ok := spq.priorities[DefaultPriority]
+
+	if !ok {
+		spq.priorities[DefaultPriority] = mapset.NewSet()
+	}
+
+	spq.priorities[DefaultPriority].Add(Value)
+	return Value
 }
