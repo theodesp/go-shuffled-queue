@@ -33,6 +33,7 @@ func (s *MySuite) TestAdd(c *C) {
 	c.Assert(len(queue.priorities), Equals, 0)
 
 	queue.Add("world")
+	queue.Add("world")
 
 	c.Assert(len(queue.priorities), Equals, 1)
 	c.Assert(queue.priorities[0].ToSlice(), DeepEquals, []interface {}{"world"})

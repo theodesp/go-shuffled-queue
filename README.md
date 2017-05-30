@@ -32,44 +32,43 @@ fmt.Println(queue.pop()) // returns {value: nil} empty queue
 
 ## API
 
-`queue := shuffledQueue.NewSPQ()`
+#### `queue := shuffledQueue.NewSPQ()`
 Create a new queue.
 
-queue.Add()
 
-`value := queue.add(value)`
+#### `value := queue.add(value)`
 
 Add a new value to the queue. Accepts single values. The value is returned for convenience. It also assigns it with a default priority.
 
-`value := queue.addWithPriority(value)`
+#### `value := queue.addWithPriority(value)`
 
 Add a new PriorityQueueItem to the queue. The value is returned for convenience.
 
 
-`value := queue.remove(value)`
+#### `value := queue.remove(value)`
 
 Remove a value from the queue.
 
 
-`value := queue.pop()`
+#### `value := queue.pop()`
 
 Pop the value with the highest priority off the queue. If multiple values have the same priority a random one is popped.
 If the queue is empty it will return a value of nil.
 
-`value := queue.last()`
+#### `value := queue.last()`
 
 Same as pop() but does not mutate the queue.
 
-`value := queue.shift()`
+#### `value := queue.shift()`
 
 Same as pop() but returns a value with the lowest priority.
 
-`value := queue.first()`
+#### `value := queue.first()`
 
 Same as shift() but does not mutate the queue.
 
 
-`it := queue.Iterator()`
+#### `it := queue.Iterator()`
 
 Returns an Iterator object that you can
 use to range over the queue items from lowest priority to highest. For example:
@@ -86,7 +85,7 @@ for elem := range it.C {
     }
 ```
 
-`it := queue.ReverseIterator()`
+#### `it := queue.ReverseIterator()`
 
 Returns an Iterator object that you can
 use to range over the queue items from highest priority to the lowest. For example:
