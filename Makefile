@@ -1,6 +1,7 @@
 # Go parameters
 BUILDPATH=$(CURDIR)
 GOCMD=go
+GODOC=godoc
 GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GOINSTALL=$(GOCMD) install
@@ -10,6 +11,8 @@ GODEP=$(GOTEST) -i
 GOFMT=gofmt -w
 GOGET=$(GOCMD) get
 GOTESTFLAGS=-check.vv
+GOCOVERFLAGS=-covermode=count -coverprofile=count.out
+GOFLAGS=-race
 
 # Package lists
 TOPLEVEL_PKG := github.com/theodesp/go-shuffled-queue
@@ -19,7 +22,7 @@ get:
 	$(GOGET)
 
 build:
-	$(GOINSTALL) $(TOPLEVEL_PKG)
+	$(GOINSTALL) $(GOFLAGS) $(TOPLEVEL_PKG)
 	@echo "build sucessfully"
 
 clean:
@@ -34,6 +37,10 @@ test:
 bench:
 	@echo "Running Benchmarks..."
 	$(GOTEST) $(TOPLEVEL_PKG)
+
+cover:
+	@echo "Running Coverage Report..."
+	$(GOTEST) $(GOCOVERFLAGS) $(TOPLEVEL_PKG)
 
 
 format:

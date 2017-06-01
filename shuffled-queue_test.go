@@ -30,17 +30,37 @@ func (s *MySuite) TestNewSPQ(c *C) {
 func (s *MySuite) TestAdd(c *C) {
 	queue := NewSPQ()
 
-	c.Assert(len(queue.priorities), Equals, 0)
+	c.Assert(queue.length, Equals, uint(0))
 
 	queue.Add("world")
 	queue.Add("world")
 
-	c.Assert(len(queue.priorities), Equals, 1)
-	c.Assert(queue.priorities[0].ToSlice(), DeepEquals, []interface {}{"world"})
+	c.Assert(queue.length, Equals, uint(1))
+	c.Assert(queue.priorities[0].ToSlice(), DeepEquals, []interface{}{"world"})
+}
+
+// AddWithPriority method
+func (s *MySuite) TestAddWithPriority(c *C) {
+	queue := NewSPQ()
+
+	c.Assert(queue.length, Equals, uint(0))
+
+	queue.AddWithPriority("welt", uint(0))
+	queue.AddWithPriority("hello", uint(1))
+	queue.AddWithPriority("hello", uint(1))
+
+	c.Assert(queue.length, Equals, uint(2))
 }
 
 func (s *MySuite) BenchmarkNewSPQ(c *C) {
 	for i := 0; i < c.N; i++ {
 		NewSPQ()
+	}
+}
+
+func (s *MySuite) BenchmarkAdd(c *C) {
+	spq := NewSPQ()
+	for i := 0; i < c.N; i++ {
+		spq.Add(i)
 	}
 }

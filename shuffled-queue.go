@@ -25,42 +25,45 @@ SOFTWARE.
 
 package shuffled_queue
 
-import "github.com/deckarep/golang-set"
-
+import (
+	"github.com/deckarep/golang-set"
+)
 
 // The default priority of all items unless specified otherwise
-const DefaultPriority uint32 = uint32(0)
-
-
-// A PriorityQueueItem defines a simple placeholder of the `priority` and `value` pair.
-// Higher items with higher priority number get popped up first
-type PriorityQueueItem struct {
-	priority uint64
-	value    interface{}
-}
+const DefaultPriority uint = uint(0)
 
 type ShuffledPriorityQueue struct {
-	priorities map[uint32]mapset.Set
+	priorities map[uint]mapset.Set
+	length     uint
 }
-
 
 // Creates and returns a reference to an empty shuffled priority queue.
 func NewSPQ() *ShuffledPriorityQueue {
-	spq := &ShuffledPriorityQueue{priorities: make(map[uint32]mapset.Set)}
+	spq := &ShuffledPriorityQueue{
+		priorities: make(map[uint]mapset.Set),
+		length:     0}
 
 	return spq
 }
 
-
 // Adds an item to the priority queue using the default priority.
-// Returns the value added
+// Returns the value added.
 func (spq *ShuffledPriorityQueue) Add(Value interface{}) interface{} {
-	_, ok := spq.priorities[DefaultPriority]
+	return spq.AddWithPriority(Value, DefaultPriority)
+}
+
+// Adds an item to the priority queue using a specified priority.
+// Returns the value added.
+func (spq *ShuffledPriorityQueue) AddWithPriority(Value interface{}, priority uint) interface{} {
+	_, ok := spq.priorities[priority]
 
 	if !ok {
-		spq.priorities[DefaultPriority] = mapset.NewSet()
+		spq.priorities[priority] = mapset.NewSet()
 	}
 
-	spq.priorities[DefaultPriority].Add(Value)
+	if spq.priorities[priority].Add(Value) {
+		spq.length += 1
+	}
+
 	return Value
 }
