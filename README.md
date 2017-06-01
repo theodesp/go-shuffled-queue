@@ -13,20 +13,20 @@ Work in progress
 ```go
 queue := shuffledQueue.NewSPQ()
 
-queue.add("hello") // Default Priority is 0
-queue.add("world") // Default Priority is 0
+queue.Add("hello") // Default Priority is 0
+queue.Add("world") // Default Priority is 0
 
-queue.addWithPriority("welt", 1)
-queue.addWithPriority("verden", 2)
-queue.addWithPriority("verden", 3)
+queue.AddWithPriority("welt", 1)
+queue.AddWithPriority("verden", 2)
+queue.AddWithPriority("verden", 3)
 
 
-fmt.Println(queue.pop()) // returns "verden", true
-fmt.Println(queue.pop()) // returns "verden", true
-fmt.Println(queue.pop()) // returns "welt", true
-fmt.Println(queue.pop()) // returns "hello", true or "world", true
-fmt.Println(queue.pop()) // returns "hello", true or "world", true
-fmt.Println(queue.pop()) // returns nil, false
+fmt.Println(queue.Pop()) // returns "verden", true
+fmt.Println(queue.Pop()) // returns "verden", true
+fmt.Println(queue.Pop()) // returns "welt", true
+fmt.Println(queue.Pop()) // returns "hello", true or "world", true
+fmt.Println(queue.Pop()) // returns "hello", true or "world", true
+fmt.Println(queue.Pop()) // returns nil, false
 
 ```
 
