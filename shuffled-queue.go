@@ -21,15 +21,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package shuffled_queue implements a non thread safe priority queue that shuffles elements with the same priority.
+// Package go_shuffled_queue implements a non thread safe priority queue that shuffles elements with the same priority.
 
-package shuffled_queue
+package go_shuffled_queue
 
 import (
-	"github.com/deckarep/golang-set"
 	"sort"
 	"math/rand"
 	"time"
+
+	"deckarep/golang-set"
 )
 
 // The default priority of all items unless specified otherwise
@@ -54,12 +55,12 @@ func NewSPQ() *ShuffledPriorityQueue {
 // Adds an item to the priority queue using the default priority.
 // Returns the value added.
 func (spq *ShuffledPriorityQueue) Add(Value interface{}) interface{} {
-	return spq.AddWithPriority(Value, DefaultPriority)
+	return spq.AddPriority(Value, DefaultPriority)
 }
 
 // Adds an item to the priority queue using a specified priority.
 // Returns the value added.
-func (spq *ShuffledPriorityQueue) AddWithPriority(Value interface{}, Priority int) interface{} {
+func (spq *ShuffledPriorityQueue) AddPriority(Value interface{}, Priority int) interface{} {
 	_, ok := spq.priorities[Priority]
 
 	if !ok {

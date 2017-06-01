@@ -69,39 +69,5 @@ Same as Pop() but returns a value with the lowest priority.
 Same as Shift() but does not mutate the queue.
 
 
-#### `it := queue.Iterator()`
-
-Returns an Iterator object that you can
-use to range over the queue items from lowest priority to highest. For example:
-
-```go
-type YourType struct {
-    Value string
-}
-
-it := queue.Iterator()
-
-for elem := range it.C {
-        fmt.Printf("Job %+v\n", elem.(*YourType).Value)
-    }
-```
-
-#### `it := queue.ReverseIterator()`
-
-Returns an Iterator object that you can
-use to range over the queue items from highest priority to the lowest. For example:
-
-```go
-type YourType struct {
-    Value string
-}
-
-it := set.ReverseIterator()
-
-for elem := range it.C {
-        fmt.Printf("Job %+v\n", elem.(*YourType).Value)
-    }
-```
-
 ## Licence
 MIT

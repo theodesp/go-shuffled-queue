@@ -1,4 +1,4 @@
-package shuffled_queue
+package go_shuffled_queue
 
 import (
 	"testing"
@@ -47,12 +47,12 @@ func (s *MySuite) TestAdd(c *C) {
 }
 
 // Test AddWithPriority method.
-func (s *MySuite) TestAddWithPriority(c *C) {
+func (s *MySuite) TestAddPriority(c *C) {
 	queue := NewSPQ()
 
-	queue.AddWithPriority("welt", 0)
-	queue.AddWithPriority("hello", 1)
-	queue.AddWithPriority("hello", 1)
+	queue.AddPriority("welt", 0)
+	queue.AddPriority("hello", 1)
+	queue.AddPriority("hello", 1)
 
 	c.Assert(queue.length, Equals, uint(2))
 }
@@ -68,7 +68,7 @@ func (s *MySuite) TestRemoveWhenEmpty(c *C) {
 func (s *MySuite) TestRemoveWhenItemNotExists(c *C) {
 	spq := NewSPQ()
 
-	spq.AddWithPriority("welt", 0)
+	spq.AddPriority("welt", 0)
 
 	c.Assert(spq.Remove("hello"), Equals, false)
 }
@@ -77,8 +77,8 @@ func (s *MySuite) TestRemoveWhenItemNotExists(c *C) {
 func (s *MySuite) TestRemoveWhenItemExistsAndOnlyOne(c *C) {
 	spq := NewSPQ()
 
-	spq.AddWithPriority("welt", 0)
-	spq.AddWithPriority("hello", 0)
+	spq.AddPriority("welt", 0)
+	spq.AddPriority("hello", 0)
 
 	c.Assert(spq.Remove("welt"), Equals, true)
 
@@ -92,9 +92,9 @@ func (s *MySuite) TestRemoveWhenItemExistsAndOnlyOne(c *C) {
 func (s *MySuite) TestRemoveWhenItemExistsAndNotOnlyOne(c *C) {
 	spq := NewSPQ()
 
-	spq.AddWithPriority("welt", 0)
-	spq.AddWithPriority("hello", 1)
-	spq.AddWithPriority("hello", 0)
+	spq.AddPriority("welt", 0)
+	spq.AddPriority("hello", 1)
+	spq.AddPriority("hello", 0)
 
 	c.Assert(spq.Remove("hello"), Equals, true)
 
@@ -109,7 +109,7 @@ func (s *MySuite) TestRemoveWhenItemExistsAndNotOnlyOne(c *C) {
 func (s *MySuite) TestRemoveWhenRemovesEmptyPriorityKeyBuckets(c *C) {
 	spq := NewSPQ()
 
-	spq.AddWithPriority("welt", 0)
+	spq.AddPriority("welt", 0)
 	spq.Remove("welt")
 
 	c.Assert(spq.length, Equals, uint(0))
@@ -129,11 +129,11 @@ func (s *MySuite) TestFirstOnEmptyQueue(c *C) {
 func (s *MySuite) TestFirstDoesNotMutate(c *C) {
 	spq := NewSPQ()
 
-	spq.AddWithPriority("welt", -1)
-	spq.AddWithPriority("world", -2)
-	spq.AddWithPriority("mold", -2)
-	spq.AddWithPriority("hello", -2)
-	spq.AddWithPriority("Atme", -3)
+	spq.AddPriority("welt", -1)
+	spq.AddPriority("world", -2)
+	spq.AddPriority("mold", -2)
+	spq.AddPriority("hello", -2)
+	spq.AddPriority("Atme", -3)
 
 	c.Assert(spq.length, Equals, uint(5))
 
@@ -148,11 +148,11 @@ func (s *MySuite) TestFirstDoesNotMutate(c *C) {
 func (s *MySuite) TestFirstOnlyOne(c *C) {
 	spq := NewSPQ()
 
-	spq.AddWithPriority("welt", -1)
-	spq.AddWithPriority("world", -2)
-	spq.AddWithPriority("mold", -2)
-	spq.AddWithPriority("hello", -2)
-	spq.AddWithPriority("Atme", -3)
+	spq.AddPriority("welt", -1)
+	spq.AddPriority("world", -2)
+	spq.AddPriority("mold", -2)
+	spq.AddPriority("hello", -2)
+	spq.AddPriority("Atme", -3)
 
 	item, ok := spq.First()
 
@@ -166,11 +166,11 @@ func (s *MySuite) TestFirstOnlyOne(c *C) {
 func (s *MySuite) TestFirstPicksRandomWithSamePriority(c *C) {
 	spq := NewSPQ()
 
-	spq.AddWithPriority("welt", -1)
-	spq.AddWithPriority("world", -2)
-	spq.AddWithPriority("mold", -2)
-	spq.AddWithPriority("hello", -2)
-	spq.AddWithPriority("Atme", -1)
+	spq.AddPriority("welt", -1)
+	spq.AddPriority("world", -2)
+	spq.AddPriority("mold", -2)
+	spq.AddPriority("hello", -2)
+	spq.AddPriority("Atme", -1)
 
 	item, ok := spq.First()
 
@@ -194,11 +194,11 @@ func (s *MySuite) TestLastOnEmptyQueue(c *C) {
 func (s *MySuite) TestLastDoesNotMutate(c *C) {
 	spq := NewSPQ()
 
-	spq.AddWithPriority("welt", -1)
-	spq.AddWithPriority("world", -2)
-	spq.AddWithPriority("mold", -2)
-	spq.AddWithPriority("hello", -2)
-	spq.AddWithPriority("Atme", -3)
+	spq.AddPriority("welt", -1)
+	spq.AddPriority("world", -2)
+	spq.AddPriority("mold", -2)
+	spq.AddPriority("hello", -2)
+	spq.AddPriority("Atme", -3)
 
 	c.Assert(spq.length, Equals, uint(5))
 
@@ -213,11 +213,11 @@ func (s *MySuite) TestLastDoesNotMutate(c *C) {
 func (s *MySuite) TestLastOnlyOne(c *C) {
 	spq := NewSPQ()
 
-	spq.AddWithPriority("welt", -1)
-	spq.AddWithPriority("world", -2)
-	spq.AddWithPriority("mold", -2)
-	spq.AddWithPriority("hello", -2)
-	spq.AddWithPriority("Atme", -3)
+	spq.AddPriority("welt", -1)
+	spq.AddPriority("world", -2)
+	spq.AddPriority("mold", -2)
+	spq.AddPriority("hello", -2)
+	spq.AddPriority("Atme", -3)
 
 	item, ok := spq.Last()
 
@@ -232,11 +232,11 @@ func (s *MySuite) TestLastOnlyOne(c *C) {
 func (s *MySuite) TestLastPicksRandomWithSamePriority(c *C) {
 	spq := NewSPQ()
 
-	spq.AddWithPriority("welt", -1)
-	spq.AddWithPriority("world", -2)
-	spq.AddWithPriority("mold", -2)
-	spq.AddWithPriority("hello", -2)
-	spq.AddWithPriority("Atme", -1)
+	spq.AddPriority("welt", -1)
+	spq.AddPriority("world", -2)
+	spq.AddPriority("mold", -2)
+	spq.AddPriority("hello", -2)
+	spq.AddPriority("Atme", -1)
 
 	item, ok := spq.Last()
 
@@ -260,11 +260,11 @@ func (s *MySuite) TestPopOnEmptyQueue(c *C) {
 func (s *MySuite) TestPopDoesMutate(c *C) {
 	spq := NewSPQ()
 
-	spq.AddWithPriority("welt", -1)
-	spq.AddWithPriority("world", -2)
-	spq.AddWithPriority("mold", -2)
-	spq.AddWithPriority("hello", -2)
-	spq.AddWithPriority("Atme", -3)
+	spq.AddPriority("welt", -1)
+	spq.AddPriority("world", -2)
+	spq.AddPriority("mold", -2)
+	spq.AddPriority("hello", -2)
+	spq.AddPriority("Atme", -3)
 
 	c.Assert(spq.length, Equals, uint(5))
 
@@ -279,11 +279,11 @@ func (s *MySuite) TestPopDoesMutate(c *C) {
 func (s *MySuite) TestPopOnlyOne(c *C) {
 	spq := NewSPQ()
 
-	spq.AddWithPriority("welt", -1)
-	spq.AddWithPriority("world", -2)
-	spq.AddWithPriority("mold", -2)
-	spq.AddWithPriority("hello", -2)
-	spq.AddWithPriority("Atme", -3)
+	spq.AddPriority("welt", -1)
+	spq.AddPriority("world", -2)
+	spq.AddPriority("mold", -2)
+	spq.AddPriority("hello", -2)
+	spq.AddPriority("Atme", -3)
 
 	item, ok := spq.Pop()
 
@@ -298,11 +298,11 @@ func (s *MySuite) TestPopOnlyOne(c *C) {
 func (s *MySuite) TestPopPicksRandomWithSamePriority(c *C) {
 	spq := NewSPQ()
 
-	spq.AddWithPriority("welt", -1)
-	spq.AddWithPriority("world", -2)
-	spq.AddWithPriority("mold", -2)
-	spq.AddWithPriority("hello", -2)
-	spq.AddWithPriority("Atme", -1)
+	spq.AddPriority("welt", -1)
+	spq.AddPriority("world", -2)
+	spq.AddPriority("mold", -2)
+	spq.AddPriority("hello", -2)
+	spq.AddPriority("Atme", -1)
 
 	item, ok := spq.Pop()
 
@@ -325,11 +325,11 @@ func (s *MySuite) TestShiftOnEmptyQueue(c *C) {
 func (s *MySuite) TestShiftDoesMutate(c *C) {
 	spq := NewSPQ()
 
-	spq.AddWithPriority("welt", -1)
-	spq.AddWithPriority("world", -2)
-	spq.AddWithPriority("mold", -2)
-	spq.AddWithPriority("hello", -2)
-	spq.AddWithPriority("Atme", -3)
+	spq.AddPriority("welt", -1)
+	spq.AddPriority("world", -2)
+	spq.AddPriority("mold", -2)
+	spq.AddPriority("hello", -2)
+	spq.AddPriority("Atme", -3)
 
 	c.Assert(spq.length, Equals, uint(5))
 
@@ -344,11 +344,11 @@ func (s *MySuite) TestShiftDoesMutate(c *C) {
 func (s *MySuite) TestShiftOnlyOne(c *C) {
 	spq := NewSPQ()
 
-	spq.AddWithPriority("welt", -1)
-	spq.AddWithPriority("world", -2)
-	spq.AddWithPriority("mold", -2)
-	spq.AddWithPriority("hello", -2)
-	spq.AddWithPriority("Atme", -3)
+	spq.AddPriority("welt", -1)
+	spq.AddPriority("world", -2)
+	spq.AddPriority("mold", -2)
+	spq.AddPriority("hello", -2)
+	spq.AddPriority("Atme", -3)
 
 	item, ok := spq.Shift()
 
@@ -362,11 +362,11 @@ func (s *MySuite) TestShiftOnlyOne(c *C) {
 func (s *MySuite) TestShiftPicksRandomWithSamePriority(c *C) {
 	spq := NewSPQ()
 
-	spq.AddWithPriority("welt", -1)
-	spq.AddWithPriority("world", -2)
-	spq.AddWithPriority("mold", -2)
-	spq.AddWithPriority("hello", -2)
-	spq.AddWithPriority("Atme", -1)
+	spq.AddPriority("welt", -1)
+	spq.AddPriority("world", -2)
+	spq.AddPriority("mold", -2)
+	spq.AddPriority("hello", -2)
+	spq.AddPriority("Atme", -1)
 
 	item, ok := spq.Shift()
 
@@ -392,11 +392,11 @@ func (s *MySuite) BenchmarkAdd(c *C) {
 	}
 }
 
-func (s *MySuite) BenchmarkAddWithPriority(c *C) {
+func (s *MySuite) BenchmarkAddPriority(c *C) {
 	spq := NewSPQ()
 
 	for i := 0; i < c.N; i++ {
-		spq.AddWithPriority(i, i)
+		spq.AddPriority(i, i)
 	}
 }
 
@@ -410,7 +410,7 @@ func (s *MySuite) BenchmarkRemoveWhenEmpty(c *C) {
 
 func (s *MySuite) BenchmarkRemoveWhenItemNotExists(c *C) {
 	spq := NewSPQ()
-	spq.AddWithPriority("welt", 0)
+	spq.AddPriority("welt", 0)
 
 	for i := 0; i < c.N; i++ {
 		spq.Remove("hello")
@@ -419,9 +419,9 @@ func (s *MySuite) BenchmarkRemoveWhenItemNotExists(c *C) {
 
 func (s *MySuite) BenchmarkRemoveWhenItemExistsAndOnlyOne(c *C) {
 	spq := NewSPQ()
-	spq.AddWithPriority("welt", 0)
-	spq.AddWithPriority("hello", 0)
-	spq.AddWithPriority("hello", 1)
+	spq.AddPriority("welt", 0)
+	spq.AddPriority("hello", 0)
+	spq.AddPriority("hello", 1)
 
 	for i := 0; i < c.N; i++ {
 		spq.Remove("hello")
