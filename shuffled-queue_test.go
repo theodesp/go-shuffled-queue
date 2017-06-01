@@ -20,13 +20,13 @@ func (s *MySuite) TestSmoke(c *C) {
 	c.Assert(true, Equals, true)
 }
 
-// Test Default Constructor test
+// Test Default Constructor test.
 func (s *MySuite) TestNewSPQ(c *C) {
 	queue := NewSPQ()
 	c.Assert(queue.length, Equals, uint(0))
 }
 
-// Test Add method
+// Test Add method.
 func (s *MySuite) TestAdd(c *C) {
 	queue := NewSPQ()
 
@@ -37,7 +37,7 @@ func (s *MySuite) TestAdd(c *C) {
 	c.Assert(queue.priorities[0].ToSlice(), DeepEquals, []interface{}{"world"})
 }
 
-// Test AddWithPriority method
+// Test AddWithPriority method.
 func (s *MySuite) TestAddWithPriority(c *C) {
 	queue := NewSPQ()
 
@@ -48,14 +48,14 @@ func (s *MySuite) TestAddWithPriority(c *C) {
 	c.Assert(queue.length, Equals, uint(2))
 }
 
-// Test Remove When spq is empty method
+// Test Remove When spq is empty method.
 func (s *MySuite) TestRemoveWhenEmpty(c *C) {
 	spq := NewSPQ()
 
 	c.Assert(spq.Remove("hello"), Equals, false)
 }
 
-// Test Remove Item that do not exist
+// Test Remove Item that do not exist.
 func (s *MySuite) TestRemoveWhenItemNotExists(c *C) {
 	spq := NewSPQ()
 
@@ -64,7 +64,7 @@ func (s *MySuite) TestRemoveWhenItemNotExists(c *C) {
 	c.Assert(spq.Remove("hello"), Equals, false)
 }
 
-// Test Remove Item that exists and its the only one
+// Test Remove Item that exists and its the only one.
 func (s *MySuite) TestRemoveWhenItemExistsAndOnlyOne(c *C) {
 	spq := NewSPQ()
 
@@ -79,7 +79,7 @@ func (s *MySuite) TestRemoveWhenItemExistsAndOnlyOne(c *C) {
 	c.Assert(found, Equals, false)
 }
 
-// Test Remove Item that exists and its not the only one
+// Test Remove Item that exists and its not the only one.
 func (s *MySuite) TestRemoveWhenItemExistsAndNotOnlyOne(c *C) {
 	spq := NewSPQ()
 
@@ -94,6 +94,28 @@ func (s *MySuite) TestRemoveWhenItemExistsAndNotOnlyOne(c *C) {
 
 	c.Assert(priority, Equals, 1)
 	c.Assert(found, Equals, true)
+}
+
+// Test if Removing an Item that is the last in a priority bucket compresses the priority map size.
+func (s *MySuite) TestRemoveWhenRemovesEmptyPriorityKeyBuckets(c *C) {
+	spq := NewSPQ()
+
+	spq.AddWithPriority("welt", 0)
+	spq.Remove("welt")
+
+	c.Assert(spq.length, Equals, uint(0))
+}
+
+// Test First returns the first element if its the only one. Does not mutate the queue.
+func (s *MySuite) TestFirst(c *C) {
+	spq := NewSPQ()
+
+	spq.AddWithPriority("welt", -1)
+	spq.AddWithPriority("world", -1)
+	spq.AddWithPriority("mold", -1)
+	spq.AddWithPriority("hello", -1)
+	spq.AddWithPriority("Atme", -1)
+	spq.First()
 }
 
 // Benchmarks

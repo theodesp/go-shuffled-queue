@@ -59,15 +59,15 @@ If the queue is empty it will return a value of nil.
 
 #### `value := queue.Last()`
 
-Same as pop() but does not mutate the queue.
+Same as Pop() but does not mutate the queue.
 
 #### `value := queue.Shift()`
 
-Same as pop() but returns a value with the lowest priority.
+Same as Pop() but returns a value with the lowest priority.
 
 #### `value := queue.First()`
 
-Same as shift() but does not mutate the queue.
+Same as Shift() but does not mutate the queue.
 
 
 #### `it := queue.Iterator()`

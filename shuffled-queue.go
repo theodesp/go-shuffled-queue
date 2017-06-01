@@ -28,6 +28,8 @@ package shuffled_queue
 import (
 	"github.com/deckarep/golang-set"
 	"sort"
+	"math/rand"
+	"time"
 )
 
 // The default priority of all items unless specified otherwise
@@ -98,7 +100,7 @@ func (spq *ShuffledPriorityQueue) Find(Value interface{}) (int, bool) {
 		return -1, false
 	}
 
-	for i := 0; i< len(spq.keys); i += 1 {
+	for i := 0; i < len(spq.keys); i += 1 {
 		priority := spq.keys[i];
 
 		if spq.priorities[priority].Contains(Value) {
@@ -111,9 +113,80 @@ func (spq *ShuffledPriorityQueue) Find(Value interface{}) (int, bool) {
 }
 
 // Attempts to find the first specified item with the specified priority.
-// Returns true if found otherwise false.
+// Returns true if found otherwise false. Does not mutate the queue.
 func (spq *ShuffledPriorityQueue) FindWithPriority(Value interface{}, Priority int) bool {
 	return false
+}
+
+// Returns the first item from the queue if its the only one.
+// Returns true if found otherwise false.
+func (spq *ShuffledPriorityQueue) First() (interface{}, bool) {
+	if spq.length == 0 {
+		return -1, false
+	}
+
+	// Sort the keys so that we pick the lowest priority bucket first
+	sort.Ints(spq.keys)
+	lowestPriorityKey := spq.keys[0]
+
+	item := spq.pickRandom(spq.priorities[lowestPriorityKey])
+	return item, true
+}
+
+// Returns the last item from the queue if its the only one.
+// Returns true if found otherwise false. Does not mutate the queue.
+func (spq *ShuffledPriorityQueue) Last() (interface{}, bool) {
+	if spq.length == 0 {
+		return -1, false
+	}
+
+	// Sort the keys so that we pick the lowest priority bucket first
+	sort.Sort(sort.Reverse(sort.IntSlice(spq.keys)))
+	highestPriorityKey := spq.keys[0]
+
+	item := spq.pickRandom(spq.priorities[highestPriorityKey])
+	return item, true
+}
+
+// Removes and returns the highest priority item from the queue if its the only one.
+// Returns true if found otherwise false.
+func (spq *ShuffledPriorityQueue) Pop() (interface{}, bool) {
+	if spq.length == 0 {
+		return -1, false
+	}
+
+	item, _ := spq.Last()
+
+	if spq.Remove(item) {
+		return item, true
+	} else {
+		return -1, false
+	}
+}
+
+// Removes and returns the lowest priority item from the queue if its the only one.
+// Returns true if found otherwise false.
+func (spq *ShuffledPriorityQueue) Shift() (interface{}, bool) {
+	if spq.length == 0 {
+		return -1, false
+	}
+
+	item, _ := spq.First()
+
+	if spq.Remove(item) {
+		return item, true
+	} else {
+		return -1, false
+	}
+}
+
+
+// Picks a random element from the set
+func (spq *ShuffledPriorityQueue) pickRandom(S mapset.Set) interface{} {
+	rand.Seed(time.Now().UTC().UnixNano())
+	randomIndex := rand.Intn(S.Cardinality())
+
+	return S.ToSlice()[randomIndex]
 }
 
 func (spq *ShuffledPriorityQueue) removePriorityKey(Priority int) {
@@ -122,6 +195,7 @@ func (spq *ShuffledPriorityQueue) removePriorityKey(Priority int) {
 	i := sort.SearchInts(spq.keys, Priority)
 
 	// https://github.com/golang/go/wiki/SliceTricks#Delete
-	spq.keys = append(spq.keys[:i], spq.keys[i+1:]...)
+	spq.keys = append(spq.keys[:i], spq.keys[i + 1:]...)
+	spq.length -= 1
 }
 
