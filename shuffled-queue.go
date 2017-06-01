@@ -77,7 +77,7 @@ func (spq *ShuffledPriorityQueue) AddWithPriority(Value interface{}, Priority in
 // Remove the item from the queue if exists.
 // Returns true if item was removed or false if the item was not found.
 func (spq *ShuffledPriorityQueue) Remove(Value interface{}) bool {
-	priority, found := spq.Find(Value)
+	priority, found := spq.FindPriority(Value)
 
 	if !found {
 		return false
@@ -95,7 +95,7 @@ func (spq *ShuffledPriorityQueue) Remove(Value interface{}) bool {
 
 // Attempts to find the first specified item with the specified priority.
 // Returns true if found otherwise false.
-func (spq *ShuffledPriorityQueue) Find(Value interface{}) (int, bool) {
+func (spq *ShuffledPriorityQueue) FindPriority(Value interface{}) (int, bool) {
 	if spq.length == 0 {
 		return -1, false
 	}
@@ -122,7 +122,7 @@ func (spq *ShuffledPriorityQueue) FindWithPriority(Value interface{}, Priority i
 // Returns true if found otherwise false.
 func (spq *ShuffledPriorityQueue) First() (interface{}, bool) {
 	if spq.length == 0 {
-		return -1, false
+		return nil, false
 	}
 
 	// Sort the keys so that we pick the lowest priority bucket first
@@ -137,7 +137,7 @@ func (spq *ShuffledPriorityQueue) First() (interface{}, bool) {
 // Returns true if found otherwise false. Does not mutate the queue.
 func (spq *ShuffledPriorityQueue) Last() (interface{}, bool) {
 	if spq.length == 0 {
-		return -1, false
+		return nil, false
 	}
 
 	// Sort the keys so that we pick the lowest priority bucket first
@@ -152,16 +152,11 @@ func (spq *ShuffledPriorityQueue) Last() (interface{}, bool) {
 // Returns true if found otherwise false.
 func (spq *ShuffledPriorityQueue) Pop() (interface{}, bool) {
 	if spq.length == 0 {
-		return -1, false
+		return nil, false
 	}
 
 	item, _ := spq.Last()
-
-	if spq.Remove(item) {
-		return item, true
-	} else {
-		return -1, false
-	}
+	return item, spq.Remove(item)
 }
 
 // Removes and returns the lowest priority item from the queue if its the only one.
@@ -172,12 +167,7 @@ func (spq *ShuffledPriorityQueue) Shift() (interface{}, bool) {
 	}
 
 	item, _ := spq.First()
-
-	if spq.Remove(item) {
-		return item, true
-	} else {
-		return -1, false
-	}
+	return item, spq.Remove(item)
 }
 
 

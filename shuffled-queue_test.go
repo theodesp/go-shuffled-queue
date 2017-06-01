@@ -73,7 +73,7 @@ func (s *MySuite) TestRemoveWhenItemExistsAndOnlyOne(c *C) {
 
 	c.Assert(spq.Remove("welt"), Equals, true)
 
-	priority, found := spq.Find("welt")
+	priority, found := spq.FindPriority("welt")
 
 	c.Assert(priority, Equals, -1)
 	c.Assert(found, Equals, false)
@@ -90,7 +90,7 @@ func (s *MySuite) TestRemoveWhenItemExistsAndNotOnlyOne(c *C) {
 	c.Assert(spq.Remove("hello"), Equals, true)
 
 	// It should exist another one with the same value
-	priority, found := spq.Find("hello")
+	priority, found := spq.FindPriority("hello")
 
 	c.Assert(priority, Equals, 1)
 	c.Assert(found, Equals, true)
