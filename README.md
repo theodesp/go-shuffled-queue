@@ -1,13 +1,15 @@
 # go-shuffled-queue
-A priority queue that shuffles elements with the same priority written in Go
+A priority queue that shuffles elements with the same priority written in Go 
 and inspired by [shuffled-priority-queue](https://github.com/mafintosh/shuffled-priority-queue).
 
+## WIP
+Work in progress
 
 ## Install
 
 `$ go get github.com/theodesp/go-shuffled-queue`
 
-##Usage
+## Usage
 ```go
 queue := shuffledQueue.NewSPQ()
 
