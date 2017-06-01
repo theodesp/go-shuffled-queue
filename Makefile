@@ -36,7 +36,7 @@ test:
 
 bench:
 	@echo "Running Benchmarks..."
-	$(GOTEST) $(TOPLEVEL_PKG)
+	$(GOBENCH) $(TOPLEVEL_PKG)
 
 cover:
 	@echo "Running Coverage Report..."
