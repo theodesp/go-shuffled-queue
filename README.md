@@ -14,20 +14,19 @@ Work in progress
 queue := shuffledQueue.NewSPQ()
 
 queue.add("hello") // Default Priority is 0
-
 queue.add("world") // Default Priority is 0
 
-queue.addWithPriority(&{priority: 1, value: "welt"})
+queue.addWithPriority("welt", 1)
+queue.addWithPriority("verden", 2)
+queue.addWithPriority("verden", 3)
 
-queue.addWithPriority(&{priority: 2, value: "verden"})
 
-
-fmt.Println(queue.pop()) // returns {value: 'verden'}
-fmt.Println(queue.pop()) // returns {value: 'verden'}
-fmt.Println(queue.pop()) // returns {value: 'welt'}
-fmt.Println(queue.pop()) // returns {value: 'hello'} or {value: 'world'}
-fmt.Println(queue.pop()) // returns {value: 'hello'} or {value: 'world'}
-fmt.Println(queue.pop()) // returns {value: nil} empty queue
+fmt.Println(queue.pop()) // returns "verden", true
+fmt.Println(queue.pop()) // returns "verden", true
+fmt.Println(queue.pop()) // returns "welt", true
+fmt.Println(queue.pop()) // returns "hello", true or "world", true
+fmt.Println(queue.pop()) // returns "hello", true or "world", true
+fmt.Println(queue.pop()) // returns nil, false
 
 ```
 

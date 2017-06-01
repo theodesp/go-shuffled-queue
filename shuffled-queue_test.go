@@ -15,6 +15,15 @@ type MySuite struct{}
 
 var _ = Suite(&MySuite{})
 
+func contains(Array []string, Item string) bool {
+	for _, I := range Array {
+		if I == Item {
+			return true
+		}
+	}
+	return false
+}
+
 // Smoke test
 func (s *MySuite) TestSmoke(c *C) {
 	c.Assert(true, Equals, true)
@@ -106,17 +115,267 @@ func (s *MySuite) TestRemoveWhenRemovesEmptyPriorityKeyBuckets(c *C) {
 	c.Assert(spq.length, Equals, uint(0))
 }
 
-// Test First returns the first element if its the only one. Does not mutate the queue.
-func (s *MySuite) TestFirst(c *C) {
+// Test First on empty queue
+func (s *MySuite) TestFirstOnEmptyQueue(c *C) {
+	spq := NewSPQ()
+
+	item, ok := spq.First()
+
+	c.Assert(item, IsNil)
+	c.Assert(ok, Equals, false)
+}
+
+// Test First does not mutate the queue
+func (s *MySuite) TestFirstDoesNotMutate(c *C) {
 	spq := NewSPQ()
 
 	spq.AddWithPriority("welt", -1)
-	spq.AddWithPriority("world", -1)
-	spq.AddWithPriority("mold", -1)
-	spq.AddWithPriority("hello", -1)
-	spq.AddWithPriority("Atme", -1)
-	spq.First()
+	spq.AddWithPriority("world", -2)
+	spq.AddWithPriority("mold", -2)
+	spq.AddWithPriority("hello", -2)
+	spq.AddWithPriority("Atme", -3)
+
+	c.Assert(spq.length, Equals, uint(5))
+
+	_, ok := spq.First()
+
+	c.Assert(ok, Equals, true)
+	c.Assert(spq.length, Equals, uint(5))
 }
+
+
+// Test First returns the highest priority item if its the only one with the same priority.
+func (s *MySuite) TestFirstOnlyOne(c *C) {
+	spq := NewSPQ()
+
+	spq.AddWithPriority("welt", -1)
+	spq.AddWithPriority("world", -2)
+	spq.AddWithPriority("mold", -2)
+	spq.AddWithPriority("hello", -2)
+	spq.AddWithPriority("Atme", -3)
+
+	item, ok := spq.First()
+
+	c.Assert(ok, Equals, true)
+	c.Assert(contains([]string{"Atme"}, item.(string)), Equals, true)
+	c.Assert(contains([]string{"world", "mold", "hello"}, item.(string)), Equals, false)
+	c.Assert(contains([]string{"welt"}, item.(string)), Equals, false)
+}
+
+// Test First returns the a random highest priority item from the bucket of items with the same priority.
+func (s *MySuite) TestFirstPicksRandomWithSamePriority(c *C) {
+	spq := NewSPQ()
+
+	spq.AddWithPriority("welt", -1)
+	spq.AddWithPriority("world", -2)
+	spq.AddWithPriority("mold", -2)
+	spq.AddWithPriority("hello", -2)
+	spq.AddWithPriority("Atme", -1)
+
+	item, ok := spq.First()
+
+	c.Assert(ok, Equals, true)
+	c.Assert(contains([]string{"world", "mold", "hello"}, item.(string)), Equals, true)
+	c.Assert(contains([]string{"Atme"}, item.(string)), Equals, false)
+	c.Assert(contains([]string{"welt"}, item.(string)), Equals, false)
+}
+
+// Test Last on empty queue
+func (s *MySuite) TestLastOnEmptyQueue(c *C) {
+	spq := NewSPQ()
+
+	item, ok := spq.Last()
+
+	c.Assert(item, IsNil)
+	c.Assert(ok, Equals, false)
+}
+
+// Test Last does not mutate the queue
+func (s *MySuite) TestLastDoesNotMutate(c *C) {
+	spq := NewSPQ()
+
+	spq.AddWithPriority("welt", -1)
+	spq.AddWithPriority("world", -2)
+	spq.AddWithPriority("mold", -2)
+	spq.AddWithPriority("hello", -2)
+	spq.AddWithPriority("Atme", -3)
+
+	c.Assert(spq.length, Equals, uint(5))
+
+	_, ok := spq.Last()
+
+	c.Assert(ok, Equals, true)
+	c.Assert(spq.length, Equals, uint(5))
+}
+
+
+// Test Last returns the lowest priority item if its the only one with the same priority.
+func (s *MySuite) TestLastOnlyOne(c *C) {
+	spq := NewSPQ()
+
+	spq.AddWithPriority("welt", -1)
+	spq.AddWithPriority("world", -2)
+	spq.AddWithPriority("mold", -2)
+	spq.AddWithPriority("hello", -2)
+	spq.AddWithPriority("Atme", -3)
+
+	item, ok := spq.Last()
+
+	c.Assert(ok, Equals, true)
+	c.Assert(contains([]string{"welt"}, item.(string)), Equals, true)
+	c.Assert(contains([]string{"Atme"}, item.(string)), Equals, false)
+	c.Assert(contains([]string{"world", "mold", "hello"}, item.(string)), Equals, false)
+
+}
+
+// Test Last returns the a random lowest priority item from the bucket of items with the same priority.
+func (s *MySuite) TestLastPicksRandomWithSamePriority(c *C) {
+	spq := NewSPQ()
+
+	spq.AddWithPriority("welt", -1)
+	spq.AddWithPriority("world", -2)
+	spq.AddWithPriority("mold", -2)
+	spq.AddWithPriority("hello", -2)
+	spq.AddWithPriority("Atme", -1)
+
+	item, ok := spq.Last()
+
+	c.Assert(ok, Equals, true)
+	c.Assert(contains([]string{"welt", "Atme"}, item.(string)), Equals, true)
+	c.Assert(contains([]string{"world", "mold", "hello"}, item.(string)), Equals, false)
+}
+
+
+// Test Pop on empty queue
+func (s *MySuite) TestPopOnEmptyQueue(c *C) {
+	spq := NewSPQ()
+
+	item, ok := spq.Pop()
+
+	c.Assert(item, IsNil)
+	c.Assert(ok, Equals, false)
+}
+
+// Test Pop mutates the queue
+func (s *MySuite) TestPopDoesMutate(c *C) {
+	spq := NewSPQ()
+
+	spq.AddWithPriority("welt", -1)
+	spq.AddWithPriority("world", -2)
+	spq.AddWithPriority("mold", -2)
+	spq.AddWithPriority("hello", -2)
+	spq.AddWithPriority("Atme", -3)
+
+	c.Assert(spq.length, Equals, uint(5))
+
+	_, ok := spq.Pop()
+
+	c.Assert(ok, Equals, true)
+	c.Assert(spq.length, Equals, uint(4))
+}
+
+
+// Test Pop returns the lowest priority item if its the only one with the same priority.
+func (s *MySuite) TestPopOnlyOne(c *C) {
+	spq := NewSPQ()
+
+	spq.AddWithPriority("welt", -1)
+	spq.AddWithPriority("world", -2)
+	spq.AddWithPriority("mold", -2)
+	spq.AddWithPriority("hello", -2)
+	spq.AddWithPriority("Atme", -3)
+
+	item, ok := spq.Pop()
+
+	c.Assert(ok, Equals, true)
+	c.Assert(contains([]string{"welt"}, item.(string)), Equals, true)
+	c.Assert(contains([]string{"Atme"}, item.(string)), Equals, false)
+	c.Assert(contains([]string{"world", "mold", "hello"}, item.(string)), Equals, false)
+
+}
+
+// Test Pop returns the a random lowest priority item from the bucket of items with the same priority.
+func (s *MySuite) TestPopPicksRandomWithSamePriority(c *C) {
+	spq := NewSPQ()
+
+	spq.AddWithPriority("welt", -1)
+	spq.AddWithPriority("world", -2)
+	spq.AddWithPriority("mold", -2)
+	spq.AddWithPriority("hello", -2)
+	spq.AddWithPriority("Atme", -1)
+
+	item, ok := spq.Pop()
+
+	c.Assert(ok, Equals, true)
+	c.Assert(contains([]string{"welt", "Atme"}, item.(string)), Equals, true)
+	c.Assert(contains([]string{"world", "mold", "hello"}, item.(string)), Equals, false)
+}
+
+// Test Shift on empty queue
+func (s *MySuite) TestShiftOnEmptyQueue(c *C) {
+	spq := NewSPQ()
+
+	item, ok := spq.Shift()
+
+	c.Assert(item, IsNil)
+	c.Assert(ok, Equals, false)
+}
+
+// Test Shift mutates the queue
+func (s *MySuite) TestShiftDoesMutate(c *C) {
+	spq := NewSPQ()
+
+	spq.AddWithPriority("welt", -1)
+	spq.AddWithPriority("world", -2)
+	spq.AddWithPriority("mold", -2)
+	spq.AddWithPriority("hello", -2)
+	spq.AddWithPriority("Atme", -3)
+
+	c.Assert(spq.length, Equals, uint(5))
+
+	_, ok := spq.Shift()
+
+	c.Assert(ok, Equals, true)
+	c.Assert(spq.length, Equals, uint(4))
+}
+
+
+// Test Shift returns the highest priority item if its the only one with the same priority.
+func (s *MySuite) TestShiftOnlyOne(c *C) {
+	spq := NewSPQ()
+
+	spq.AddWithPriority("welt", -1)
+	spq.AddWithPriority("world", -2)
+	spq.AddWithPriority("mold", -2)
+	spq.AddWithPriority("hello", -2)
+	spq.AddWithPriority("Atme", -3)
+
+	item, ok := spq.Shift()
+
+	c.Assert(ok, Equals, true)
+	c.Assert(contains([]string{"Atme"}, item.(string)), Equals, true)
+	c.Assert(contains([]string{"world", "mold", "hello"}, item.(string)), Equals, false)
+	c.Assert(contains([]string{"welt"}, item.(string)), Equals, false)
+}
+
+// Test Shift returns the a random highest priority item from the bucket of items with the same priority.
+func (s *MySuite) TestShiftPicksRandomWithSamePriority(c *C) {
+	spq := NewSPQ()
+
+	spq.AddWithPriority("welt", -1)
+	spq.AddWithPriority("world", -2)
+	spq.AddWithPriority("mold", -2)
+	spq.AddWithPriority("hello", -2)
+	spq.AddWithPriority("Atme", -1)
+
+	item, ok := spq.Shift()
+
+	c.Assert(ok, Equals, true)
+	c.Assert(contains([]string{"world", "mold", "hello"}, item.(string)), Equals, true)
+	c.Assert(contains([]string{"Atme"}, item.(string)), Equals, false)
+	c.Assert(contains([]string{"welt"}, item.(string)), Equals, false)
+}
+
 
 // Benchmarks
 func (s *MySuite) BenchmarkNewSPQ(c *C) {

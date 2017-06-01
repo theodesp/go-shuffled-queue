@@ -65,6 +65,9 @@ func (spq *ShuffledPriorityQueue) AddWithPriority(Value interface{}, Priority in
 	if !ok {
 		spq.priorities[Priority] = mapset.NewSet()
 		spq.keys = append(spq.keys, Priority)
+
+		// We maintain a sorted list of keys for Pop, Shift operations
+		sort.Ints(spq.keys)
 	}
 
 	if spq.priorities[Priority].Add(Value) {
@@ -93,7 +96,7 @@ func (spq *ShuffledPriorityQueue) Remove(Value interface{}) bool {
 	return true
 }
 
-// Attempts to find the first specified item with the specified priority.
+// Attempts to find the first specified item and returns its priority.
 // Returns true if found otherwise false.
 func (spq *ShuffledPriorityQueue) FindPriority(Value interface{}) (int, bool) {
 	if spq.length == 0 {
@@ -112,12 +115,6 @@ func (spq *ShuffledPriorityQueue) FindPriority(Value interface{}) (int, bool) {
 	return -1, false
 }
 
-// Attempts to find the first specified item with the specified priority.
-// Returns true if found otherwise false. Does not mutate the queue.
-func (spq *ShuffledPriorityQueue) FindWithPriority(Value interface{}, Priority int) bool {
-	return false
-}
-
 // Returns the first item from the queue if its the only one.
 // Returns true if found otherwise false.
 func (spq *ShuffledPriorityQueue) First() (interface{}, bool) {
@@ -125,8 +122,11 @@ func (spq *ShuffledPriorityQueue) First() (interface{}, bool) {
 		return nil, false
 	}
 
-	// Sort the keys so that we pick the lowest priority bucket first
-	sort.Ints(spq.keys)
+	// We assume keys are sorted otherwise we sort them now
+	if !sort.IntsAreSorted(spq.keys) {
+		sort.Ints(spq.keys)
+	}
+
 	lowestPriorityKey := spq.keys[0]
 
 	item := spq.pickRandom(spq.priorities[lowestPriorityKey])
@@ -140,9 +140,12 @@ func (spq *ShuffledPriorityQueue) Last() (interface{}, bool) {
 		return nil, false
 	}
 
-	// Sort the keys so that we pick the lowest priority bucket first
-	sort.Sort(sort.Reverse(sort.IntSlice(spq.keys)))
-	highestPriorityKey := spq.keys[0]
+	// We assume keys are sorted otherwise we sort them now
+	if !sort.IntsAreSorted(spq.keys) {
+		sort.Ints(spq.keys)
+	}
+
+	highestPriorityKey := spq.keys[len(spq.keys) - 1]
 
 	item := spq.pickRandom(spq.priorities[highestPriorityKey])
 	return item, true
@@ -163,7 +166,7 @@ func (spq *ShuffledPriorityQueue) Pop() (interface{}, bool) {
 // Returns true if found otherwise false.
 func (spq *ShuffledPriorityQueue) Shift() (interface{}, bool) {
 	if spq.length == 0 {
-		return -1, false
+		return nil, false
 	}
 
 	item, _ := spq.First()
