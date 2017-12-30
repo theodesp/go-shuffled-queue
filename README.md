@@ -2,12 +2,9 @@
 A priority queue that shuffles elements with the same priority written in Go 
 and inspired by [shuffled-priority-queue](https://github.com/mafintosh/shuffled-priority-queue).
 
-## WIP
-Work in progress
-
 ## Install
 
-`$ go get github.com/theodesp/go-shuffled-queue`
+`$ go get -u github.com/theodesp/go-shuffled-queue`
 
 ## Usage
 ```go
@@ -70,4 +67,4 @@ Same as Shift() but does not mutate the queue.
 
 
 ## Licence
-MIT
+MIT @ 2017
