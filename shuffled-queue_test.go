@@ -2,8 +2,6 @@ package go_shuffled_queue
 
 import (
 	"testing"
-
-	. "gopkg.in/check.v1"
 )
 
 // Hook up gocheck into the "go test" runner.
@@ -143,7 +141,6 @@ func (s *MySuite) TestFirstDoesNotMutate(c *C) {
 	c.Assert(spq.length, Equals, uint(5))
 }
 
-
 // Test First returns the highest priority item if its the only one with the same priority.
 func (s *MySuite) TestFirstOnlyOne(c *C) {
 	spq := NewSPQ()
@@ -208,7 +205,6 @@ func (s *MySuite) TestLastDoesNotMutate(c *C) {
 	c.Assert(spq.length, Equals, uint(5))
 }
 
-
 // Test Last returns the lowest priority item if its the only one with the same priority.
 func (s *MySuite) TestLastOnlyOne(c *C) {
 	spq := NewSPQ()
@@ -245,7 +241,6 @@ func (s *MySuite) TestLastPicksRandomWithSamePriority(c *C) {
 	c.Assert(contains([]string{"world", "mold", "hello"}, item.(string)), Equals, false)
 }
 
-
 // Test Pop on empty queue
 func (s *MySuite) TestPopOnEmptyQueue(c *C) {
 	spq := NewSPQ()
@@ -273,7 +268,6 @@ func (s *MySuite) TestPopDoesMutate(c *C) {
 	c.Assert(ok, Equals, true)
 	c.Assert(spq.length, Equals, uint(4))
 }
-
 
 // Test Pop returns the lowest priority item if its the only one with the same priority.
 func (s *MySuite) TestPopOnlyOne(c *C) {
@@ -339,7 +333,6 @@ func (s *MySuite) TestShiftDoesMutate(c *C) {
 	c.Assert(spq.length, Equals, uint(4))
 }
 
-
 // Test Shift returns the highest priority item if its the only one with the same priority.
 func (s *MySuite) TestShiftOnlyOne(c *C) {
 	spq := NewSPQ()
@@ -375,7 +368,6 @@ func (s *MySuite) TestShiftPicksRandomWithSamePriority(c *C) {
 	c.Assert(contains([]string{"Atme"}, item.(string)), Equals, false)
 	c.Assert(contains([]string{"welt"}, item.(string)), Equals, false)
 }
-
 
 // Benchmarks
 func (s *MySuite) BenchmarkNewSPQ(c *C) {

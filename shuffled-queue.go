@@ -34,7 +34,7 @@ import (
 )
 
 // The default priority of all items unless specified otherwise
-const DefaultPriority int = 0
+const DefaultPriority = 0
 
 type ShuffledPriorityQueue struct {
 	priorities map[int]mapset.Set
@@ -44,50 +44,50 @@ type ShuffledPriorityQueue struct {
 
 // Creates and returns a reference to an empty shuffled priority queue.
 func NewSPQ() *ShuffledPriorityQueue {
-	spq := &ShuffledPriorityQueue{
+	spq := ShuffledPriorityQueue{
 		priorities: make(map[int]mapset.Set),
-		keys: []int{},
+		keys:       []int{},
 		length:     uint(0)}
 
-	return spq
+	return &spq
 }
 
 // Adds an item to the priority queue using the default priority.
 // Returns the value added.
-func (spq *ShuffledPriorityQueue) Add(Value interface{}) interface{} {
-	return spq.AddPriority(Value, DefaultPriority)
+func (spq *ShuffledPriorityQueue) Add(v interface{}) interface{} {
+	return spq.AddPriority(v, DefaultPriority)
 }
 
 // Adds an item to the priority queue using a specified priority.
 // Returns the value added.
-func (spq *ShuffledPriorityQueue) AddPriority(Value interface{}, Priority int) interface{} {
-	_, ok := spq.priorities[Priority]
+func (spq *ShuffledPriorityQueue) AddPriority(v interface{}, priority int) interface{} {
+	_, ok := spq.priorities[priority]
 
 	if !ok {
-		spq.priorities[Priority] = mapset.NewSet()
-		spq.keys = append(spq.keys, Priority)
+		spq.priorities[priority] = mapset.NewSet()
+		spq.keys = append(spq.keys, priority)
 
 		// We maintain a sorted list of keys for Pop, Shift operations
 		sort.Ints(spq.keys)
 	}
 
-	if spq.priorities[Priority].Add(Value) {
+	if spq.priorities[priority].Add(v) {
 		spq.length += 1
 	}
 
-	return Value
+	return v
 }
 
 // Remove the item from the queue if exists.
 // Returns true if item was removed or false if the item was not found.
-func (spq *ShuffledPriorityQueue) Remove(Value interface{}) bool {
-	priority, found := spq.FindPriority(Value)
+func (spq *ShuffledPriorityQueue) Remove(v interface{}) bool {
+	priority, found := spq.FindPriority(v)
 
 	if !found {
 		return false
 	}
 
-	spq.priorities[priority].Remove(Value)
+	spq.priorities[priority].Remove(v)
 
 	// Cleanup the priority queue so that it does not grow too big
 	if spq.priorities[priority].Cardinality() == 0 {
@@ -99,15 +99,14 @@ func (spq *ShuffledPriorityQueue) Remove(Value interface{}) bool {
 
 // Attempts to find the first specified item and returns its priority.
 // Returns true if found otherwise false.
-func (spq *ShuffledPriorityQueue) FindPriority(Value interface{}) (int, bool) {
+func (spq *ShuffledPriorityQueue) FindPriority(v interface{}) (int, bool) {
 	if spq.length == 0 {
 		return -1, false
 	}
 
 	for i := 0; i < len(spq.keys); i += 1 {
 		priority := spq.keys[i];
-
-		if spq.priorities[priority].Contains(Value) {
+		if spq.priorities[priority].Contains(v) {
 			// First found first served
 			return priority, true
 		}
@@ -146,7 +145,7 @@ func (spq *ShuffledPriorityQueue) Last() (interface{}, bool) {
 		sort.Ints(spq.keys)
 	}
 
-	highestPriorityKey := spq.keys[len(spq.keys) - 1]
+	highestPriorityKey := spq.keys[len(spq.keys)-1]
 
 	item := spq.pickRandom(spq.priorities[highestPriorityKey])
 	return item, true
@@ -174,7 +173,6 @@ func (spq *ShuffledPriorityQueue) Shift() (interface{}, bool) {
 	return item, spq.Remove(item)
 }
 
-
 // Picks a random element from the set
 func (spq *ShuffledPriorityQueue) pickRandom(S mapset.Set) interface{} {
 	rand.Seed(time.Now().UTC().UnixNano())
@@ -183,13 +181,11 @@ func (spq *ShuffledPriorityQueue) pickRandom(S mapset.Set) interface{} {
 	return S.ToSlice()[randomIndex]
 }
 
-func (spq *ShuffledPriorityQueue) removePriorityKey(Priority int) {
-	delete(spq.priorities, Priority)
+func (spq *ShuffledPriorityQueue) removePriorityKey(priority int) {
+	delete(spq.priorities, priority)
 	sort.Ints(spq.keys)
-	i := sort.SearchInts(spq.keys, Priority)
+	i := sort.SearchInts(spq.keys, priority)
 
-	// https://github.com/golang/go/wiki/SliceTricks#Delete
-	spq.keys = append(spq.keys[:i], spq.keys[i + 1:]...)
+	spq.keys = append(spq.keys[:i], spq.keys[i+1:]...)
 	spq.length -= 1
 }
-
